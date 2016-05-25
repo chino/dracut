@@ -20,7 +20,7 @@ rsyslog_config() {
 
     cat $syslog_template
 
-    for filter in $filters; do
+    for filter in "$filters"; do
         echo "${filter} @${server}"
     done
     #echo "*.* /tmp/syslog"

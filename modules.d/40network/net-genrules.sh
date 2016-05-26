@@ -51,12 +51,14 @@ command -v fix_bootif >/dev/null || . /lib/net-lib.sh
         done
     done
 
-    if [ -z "$IFACES" ]; then
-        [ -e /tmp/net.ifaces ] && read IFACES < /tmp/net.ifaces
-    fi
-
     if [ -e /tmp/net.bootdev ]; then
         bootdev=$(cat /tmp/net.bootdev)
+    fi
+
+    if [ -z "$IFACES" ]; then
+        [ -e /tmp/net.ifaces ] && read IFACES < /tmp/net.ifaces
+    else
+        [ -n $bootdev ] && IFACES="$bootdev $IFACES"
     fi
 
     ifup='/sbin/ifup $env{INTERFACE}'
@@ -90,6 +92,7 @@ command -v fix_bootif >/dev/null || . /lib/net-lib.sh
 
         if [ -n "$MASTER_IFACES" ]; then
             wait_ifaces=$MASTER_IFACES
+            [ -n $bootdev ] && wait_ifaces="$bootdev $MASTER_IFACES"
         else
             wait_ifaces=$IFACES
         fi
